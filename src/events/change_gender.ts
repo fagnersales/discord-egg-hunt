@@ -31,7 +31,7 @@ register_event({
                 { name: "Preço", value: `R$ ${egg.skins[gender].price.toFixed(2)}` },
                 { name: "Gênero", value: gender === "male" ? "Masculino" : "Feminino" },
             ])
-            .setDescription(egg.description)
+            .setDescription(egg.skins.description)
             .setImage(egg.skins[gender].imageUrl)
 
         const component = new ActionRowBuilder<ButtonBuilder>()

@@ -24,6 +24,8 @@ register_event({
 
         const requestedCartsCollection = collection(getFirestore(), "requestedOpenCarts")
 
+        await guild.members.fetch()
+
         onSnapshot(requestedCartsCollection, (snapshot) => {
             snapshot.docChanges().forEach(async change => {
                 if (change.type === "added") {
@@ -39,7 +41,9 @@ register_event({
 
                     if (!egg) throw new Error("Egg not found wtf")
 
-                    const user = await guild.members.fetch(userId)
+                    const user = await guild.members
+                        .fetch(userId)
+                        .catch(() => null)
 
                     const already_created_channel = guild.channels.cache.find(
                         (channel): channel is TextChannel => (
@@ -81,7 +85,7 @@ register_event({
                                         { name: "Preço", value: `R$ ${egg.skins[skin.gender].price.toFixed(2)}` },
                                         { name: "Gênero", value: skin.gender === "male" ? "Masculino" : "Feminino" },
                                     ])
-                                    .setDescription(egg.description)
+                                    .setDescription(egg.skins.description)
                                     .setImage(egg.skins[skin.gender].imageUrl)
                             ],
                             components: [

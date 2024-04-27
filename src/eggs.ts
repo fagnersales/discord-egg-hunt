@@ -21,6 +21,7 @@ const eggSchema = z.object({
     description: z.string(),
     primaryColor: colorSchema,
     skins: z.object({
+        description: z.string(),
         female: skinSchema,
         male: skinSchema
     })

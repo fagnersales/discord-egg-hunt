@@ -7,8 +7,7 @@ export function spawn_message_egg(egg: Egg) {
         embeds: [
             new EmbedBuilder()
                 .setColor(egg.primaryColor)
-                .setDescription(egg.description)
-                .setThumbnail(egg.imageUrl)
+                .setImage(egg.imageUrl)
         ],
         components: [
             new ActionRowBuilder<ButtonBuilder>()

@@ -3,7 +3,6 @@ import { z } from "zod"
 import { create_client, reload_commands } from "../lib"
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, TextChannel } from "discord.js"
 import { get_random_egg } from "./get_random_egg"
-import { spawn_message_egg } from "./spawn_message_egg"
 import { arrayUnion, doc, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore"
 
 const client = create_client({
@@ -75,9 +74,21 @@ const server = Bun.serve({
                 .send(customer_id, { embeds: [received_egg_embed], components })
                 .catch(() => { })
 
+            const collected_eggs_amount = snapshot.exists() ? snapshot.data().unlockedEggs.length + 1 : 1
+
             snapshot.exists()
                 ? await updateDoc(ref, { unlockedEggs: arrayUnion(egg.id) })
                 : await setDoc(ref, { unlockedEggs: [egg.id], id: customer_id })
+
+            const egg_hunt_log_channel = await channel.guild.channels.fetch("1224409864902545450")
+
+            if (!(egg_hunt_log_channel instanceof TextChannel)) throw new Error("Invalid EGG HUNT LOG Channel")
+
+            if (collected_eggs_amount === 14) {
+                egg_hunt_log_channel.send(`🎉🎉🎉 <@${customer_id}> acabou de completar sua coleção de ovos e venceu o evento Egg Hunt 2024!`)
+            } else {
+                egg_hunt_log_channel.send(`<@${customer_id}> acabou de resgatar o ovo **${egg.name}** e só faltam **${14 - collected_eggs_amount}** ovos!`)
+            }
         },
     }
 })
